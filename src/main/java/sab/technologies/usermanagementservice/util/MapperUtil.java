@@ -16,7 +16,6 @@ public class MapperUtil {
         this.mapper = DozerBeanMapperBuilder
                 .create()
                 .build();
-
     }
 
     public <T, U> U map(T source, Class<U> destinationClass) {

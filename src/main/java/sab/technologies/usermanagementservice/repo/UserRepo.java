@@ -6,7 +6,5 @@ import sab.technologies.usermanagementservice.domain.UserEntity;
 import java.util.List;
 
 public interface UserRepo extends JpaRepository<UserEntity, Long> {
-
     List<UserEntity> findAllByClientId(Long clientId);
-
 }
