@@ -7,11 +7,11 @@ import sab.technologies.usermanagementservice.service.UserService;
 
 import java.util.List;
 
-@RequestMapping(value = "api/v1/user")
+@RequestMapping(value = "api/v1/users")
 @RestController
 public class UserController {
 
-    private UserService userService;
+    private final UserService userService;
 
     public UserController(UserService userService) {
         this.userService = userService;
@@ -37,15 +37,14 @@ public class UserController {
         userService.deleteUser(id);
     }
 
-    @GetMapping(value = "/getUserByClientId/{clientId}")
-    public List<User> getUserByClientId(@PathVariable(value = "clientId") Long clientId) {
+    @GetMapping(value = "/client/{clientId}")
+    public List<User> getUserListByClientId(@PathVariable(value = "clientId") Long clientId) {
         return userService.getAllByClientId(clientId);
     }
 
-    @GetMapping(value = "/getAllByClientIdAndProjectIdList")
-    public List<User> getAllByClientIdAndProjectIdList(@RequestParam(value = "clientId") Long clientId,
-                                                       @RequestParam(value = "projectIdList") List<Long> projectIdList) {
-        return userService.getAllByClientIdAndProjectIdList(clientId, projectIdList);
+    @GetMapping("/all")
+    public List<User> getAllUsers() {
+        return userService.getAllUsers();
     }
 
 }

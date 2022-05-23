@@ -1,15 +1,33 @@
 package sab.technologies.usermanagementservice.util;
 
-import org.dozer.DozerBeanMapper;
-import org.dozer.Mapper;
-import org.springframework.context.annotation.Bean;
+import com.github.dozermapper.core.DozerBeanMapperBuilder;
+import com.github.dozermapper.core.Mapper;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class MapperUtil {
 
-    @Bean
-    private Mapper mapper() {
-        return new DozerBeanMapper();
+    private final Mapper mapper;
+
+    public MapperUtil() {
+        this.mapper = DozerBeanMapperBuilder
+                .create()
+                .build();
+
+    }
+
+    public <T, U> U map(T source, Class<U> destinationClass) {
+        return mapper.map(source, destinationClass);
+    }
+
+    public <T, U> List<U> mapList(List<T> source, Class<U> destinationClass) {
+
+        return source
+                .stream()
+                .map(item -> mapper.map(item, destinationClass))
+                .collect(Collectors.toList());
     }
 }

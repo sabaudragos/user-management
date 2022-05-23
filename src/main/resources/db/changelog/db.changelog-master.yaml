@@ -34,45 +34,9 @@ databaseChangeLog:
               - column:
                   name: client_id
                   type: bigint
-              - column:
-                  name: project_id_list
-                  type: bigint
         - addUniqueConstraint:
             - columnNames: email
             - tableName: users
-  - changeSet:
-      id: 2
-      author: Bogdan
-      changes:
-        - createTable:
-            tableName: project
-            columns:
-              - column:
-                  name: id
-                  type: bigint
-                  constraints:
-                    primaryKey: true
-                    nullable: false
-              - column:
-                  name: project_id
-                  type: bigint
-  - changeSet:
-      id: 3
-      author: Bogdan
-      changes:
-        - createTable:
-            tableName: user_project
-            columns:
-              - column:
-                  name: user_id
-                  type: bigint
-                  constraints:
-                    nullable: false
-              - column:
-                  name: project_id
-                  type: bigint
-                  constraints:
-                    nullable: false
 #  - changeSet:
 #      id: 4
 #      author: Bogdan
