@@ -17,4 +17,16 @@ public class User {
     private String email;
 
     private Long clientId;
+
+    private String contactNumber;
+
+    private String address;
+
+    private String city;
+
+    private String state;
+
+    private String zipCode;
+
+    private String country;
 }
