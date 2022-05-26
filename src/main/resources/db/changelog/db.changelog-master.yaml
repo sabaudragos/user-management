@@ -35,7 +35,7 @@ databaseChangeLog:
                   name: client_id
                   type: bigint
               - column:
-                  name: contactNumber
+                  name: contact_number
                   type: varchar(100)
               - column:
                   name: address
