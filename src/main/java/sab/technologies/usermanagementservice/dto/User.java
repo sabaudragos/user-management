@@ -3,12 +3,9 @@ package sab.technologies.usermanagementservice.dto;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
-
 @Getter
 @Setter
 public class User {
-
     private Long id;
 
     private String password;
@@ -21,5 +18,15 @@ public class User {
 
     private Long clientId;
 
-    private List<Project> projectIdList;
+    private String contactNumber;
+
+    private String address;
+
+    private String city;
+
+    private String state;
+
+    private String zipCode;
+
+    private String country;
 }

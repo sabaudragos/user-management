@@ -1,72 +1,127 @@
 package sab.technologies.usermanagementservice.service;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.context.annotation.Import;
 import sab.technologies.usermanagementservice.UserConfig;
-import sab.technologies.usermanagementservice.UserManagementServiceApplication;
 import sab.technologies.usermanagementservice.dto.User;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import javax.persistence.EntityNotFoundException;
+import java.util.List;
 
+@Import(UserConfig.class)
 @SpringBootTest
-@RunWith(SpringRunner.class)
 class UserServiceTest {
 
-    private static final String password = "password";
-    private static final String firstName = "John";
-    private static final String lastName = "Doe";
-    private static final String email = "test@test.com";
-    private static final Long clientId = 12345L;
-    private static final ArrayList projectIdList = new ArrayList<>(Arrays.asList("111", "222"));
+    private static final String PASSWORD = "password";
+    private static final String FIRST_NAME = "John";
+    private static final String LAST_NAME = "Doe";
+    private static final String EMAIL = "test@test.com";
+    private static final String NEW_EMAIL = "new@email.com";
+    private static final Long CLIENT_ID = 12345L;
 
     @Autowired
     private UserService userService;
 
     @Test
-    void createUser() {
+    void shouldCreateUser() {
         //when
         User savedUser = createAndSaveUser();
-
-        //then
         User findUser = userService.getUser(savedUser.getId());
-        Assert.assertNotNull("There should be one user saved in database", savedUser);
+
+        // then
+        Assertions.assertNotNull(findUser, "There should be one user saved in database");
+        Assertions.assertEquals(EMAIL, findUser.getEmail(), "The email should have matched");
+        Assertions.assertEquals(CLIENT_ID, findUser.getClientId(), "The client id should have matched");
     }
 
     @Test
-    void getUser() {
+    void shouldGetUser() {
+        // given
+        User savedUser = createAndSaveUser();
+
+        //when
+        User findUser = userService.getUser(savedUser.getId());
+
+        // then
+        Assertions.assertNotNull(findUser, "There should be one user saved in database");
+        Assertions.assertEquals(EMAIL, findUser.getEmail(), "The email should have matched");
+        Assertions.assertEquals(CLIENT_ID, findUser.getClientId(), "The client id should have matched");
+    }
+
+    @Test
+    void shouldThrowExceptionWhenUserNotFoundInDb() {
+        Assertions.assertThrows(EntityNotFoundException.class, () -> userService.getUser(101010L),
+                "Should have thrown EntityNotFoundException when user not in db");
+
     }
 
     @Test
     void updateUser() {
+        // given
+        User savedUser = createAndSaveUser();
+        savedUser.setEmail(NEW_EMAIL);
+
+        //when
+        User updatedUser = userService.updateUser(savedUser);
+
+        // then
+        Assertions.assertNotNull(updatedUser, "There should be one user saved in database");
+        Assertions.assertEquals(NEW_EMAIL, updatedUser.getEmail(), "The email should have matched");
+        Assertions.assertEquals(CLIENT_ID, updatedUser.getClientId(), "The client id should have matched");
     }
 
     @Test
-    void deleteUser() {
+    void shouldDeleteUser() {
+        // given
+        User savedUser = createAndSaveUser();
+
+        //when
+        userService.deleteUser(savedUser.getId());
+
+        // then
+        Assertions.assertThrows(EntityNotFoundException.class,
+                () -> userService.getUser(savedUser.getId()),
+                "The user should have been removed from the database");
     }
 
     @Test
     void getAllByClientId() {
+        // given
+        User savedUserOne = createAndSaveUser();
+        User savedUserTwo = createAndSaveUser("some@emai.com");
+
+        //when
+        List<User> userList = userService.getAllByClientId(savedUserOne.getClientId());
+
+        // then
+        Assertions.assertEquals(2, userList.size(), "There should be 2 users in the db");
+        userList.forEach(user ->
+                Assertions.assertEquals(CLIENT_ID, user.getClientId(), "The client id should have matched"));
     }
 
-    @Test
-    void getAllByClientIdAndProjectIdList() {
-    }
 
     private User createAndSaveUser() {
         User user = new User();
-        user.setPassword(password);
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
-        user.setEmail(email);
-        user.setClientId(clientId);
-        user.setProjectIdList(projectIdList);
+        user.setPassword(PASSWORD);
+        user.setFirstName(FIRST_NAME);
+        user.setLastName(LAST_NAME);
+        user.setEmail(EMAIL);
+        user.setClientId(CLIENT_ID);
 
         return userService.createUser(user);
+    }
 
+    private User createAndSaveUser(String email) {
+        User user = new User();
+        user.setPassword(PASSWORD);
+        user.setFirstName(FIRST_NAME);
+        user.setLastName(LAST_NAME);
+        user.setEmail(email);
+        user.setClientId(CLIENT_ID);
+
+        return userService.createUser(user);
     }
 }
